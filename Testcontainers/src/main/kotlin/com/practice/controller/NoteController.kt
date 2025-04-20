@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/notes")
-class NotesController(private val noteService: NoteService) {
+class NoteController(private val noteService: NoteService) {
 
     @PostMapping
     fun createNote(@RequestBody note: Note): ResponseEntity<Note> {

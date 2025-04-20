@@ -5,7 +5,7 @@ import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Repository
 
 @Repository
-class JdbiNoteRepository(private val jdbi: Jdbi) : NoteRepository {
+open class JdbiNoteRepository(private val jdbi: Jdbi) : NoteRepository {
 
     override fun create(note: Note): Note {
         val id = jdbi.withHandle<Long, Exception> { handle ->
