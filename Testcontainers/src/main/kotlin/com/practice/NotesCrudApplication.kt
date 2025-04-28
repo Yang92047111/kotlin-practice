@@ -1,11 +1,11 @@
 package com.practice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import org.springframework.boot.SpringApplication
 
 @SpringBootApplication
 class NotesCrudApplication
 
 fun main(args: Array<String>) {
-    runApplication<NotesCrudApplication>(*args)
+    SpringApplication.run(NotesCrudApplication::class.java, *args)
 }
