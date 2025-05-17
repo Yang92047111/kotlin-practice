@@ -69,6 +69,7 @@
 
 	<modules>
 		<module>Testcontainers</module>
+		<module>OracleTrigger</module>
 	</modules>
 
 </project>
