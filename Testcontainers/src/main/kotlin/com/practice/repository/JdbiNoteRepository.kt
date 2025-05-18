@@ -1,6 +1,7 @@
-package com.practice.repository
+package com.practice.testcontainer.repository
 
-import com.practice.model.Note
+import com.practice.testcontainer.model.Note
+import com.practice.testcontainer.repository.NoteRepository
 import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Repository
 

@@ -1,4 +1,4 @@
-package com.practice.model
+package com.practice.oracle.model
 
 data class User(
     val id: Long? = null,

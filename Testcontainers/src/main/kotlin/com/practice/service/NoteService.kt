@@ -1,8 +1,8 @@
-package com.practice.service
+package com.practice.testcontainer.service
 
-import com.practice.model.Note
-import com.practice.repository.JdbiNoteRepository
-import com.practice.repository.NoteRepository
+import com.practice.testcontainer.model.Note
+import com.practice.testcontainer.repository.JdbiNoteRepository
+import com.practice.testcontainer.repository.NoteRepository
 import org.springframework.stereotype.Service
 
 @Service

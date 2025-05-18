@@ -1,9 +1,9 @@
-package com.practice.controller
+package com.practice.testcontainer.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.practice.model.Note
-import com.practice.service.NoteService
-import com.practice.NotesCrudApplication
+import com.practice.testcontainer.model.Note
+import com.practice.testcontainer.service.NoteService
+import com.practice.testcontainer.NotesCrudApplication
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -22,8 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.context.ContextConfiguration
 
-// @AutoConfigureMockMvc
-@SpringBootTest
+@WebMvcTest(NoteController::class)
 class NoteControllerTest {
 
     @Autowired

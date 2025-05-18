@@ -1,16 +1,16 @@
-package com.practice.controller
+package com.practice.oracle.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import com.practice.service.UserService
-import com.practice.model.User
+import com.practice.oracle.service.UserService
+import com.practice.oracle.model.User
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 class UserController(private val userService: UserService) {
 
-    @PostMapping("/users")
+    @PostMapping("/")
     fun createEntity(@RequestBody user: User): ResponseEntity<User> {
         val createdUser = userService.create(user)
         return ResponseEntity(createdUser, HttpStatus.CREATED)
@@ -22,13 +22,13 @@ class UserController(private val userService: UserService) {
         return ResponseEntity(user, HttpStatus.OK)
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/{id}")
     fun updateEntity(@PathVariable id: Long, @RequestBody user: User): ResponseEntity<User> {
         val updatedEntity = userService.update(id, user)
         return ResponseEntity(updatedEntity, HttpStatus.OK)
     }
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/{id}")
     fun deleteEntity(@PathVariable id: Long): ResponseEntity<Void> {
         return try {
             userService.delete(id)

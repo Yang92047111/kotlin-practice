@@ -1,7 +1,7 @@
-package com.practice.repository
+package com.practice.testcontainer.repository
 
 import com.practice.TestContainerBase
-import com.practice.model.Note
+import com.practice.testcontainer.model.Note
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.h2.H2DatabasePlugin
 import org.jdbi.v3.sqlobject.SqlObjectPlugin

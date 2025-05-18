@@ -1,7 +1,7 @@
-package com.practice.controller
+package com.practice.testcontainer.controller
 
-import com.practice.model.Note
-import com.practice.service.NoteService
+import com.practice.testcontainer.model.Note
+import com.practice.testcontainer.service.NoteService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

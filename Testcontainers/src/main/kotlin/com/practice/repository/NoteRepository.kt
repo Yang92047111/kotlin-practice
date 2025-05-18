@@ -1,6 +1,6 @@
-package com.practice.repository
+package com.practice.testcontainer.repository
 
-import com.practice.model.Note
+import com.practice.testcontainer.model.Note
 
 interface NoteRepository {
     fun create(note: Note): Note

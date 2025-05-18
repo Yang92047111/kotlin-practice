@@ -1,11 +1,11 @@
-package com.practice.service
+package com.practice.oracle.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.RestClientException
-import com.practice.repository.UserRepository
-import com.practice.model.User
+import com.practice.oracle.repository.UserRepository
+import com.practice.oracle.model.User
 
 @Service
 class UserService(private val userRepository: UserRepository, private val restTemplate: RestTemplate) {

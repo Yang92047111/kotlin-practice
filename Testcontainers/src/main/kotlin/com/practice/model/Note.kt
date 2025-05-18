@@ -1,4 +1,4 @@
-package com.practice.model
+package com.practice.testcontainer.model
 
 data class Note(
     val id: Long? = null,

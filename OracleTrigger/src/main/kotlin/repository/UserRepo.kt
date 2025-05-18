@@ -1,4 +1,4 @@
-package com.practice.repository
+package com.practice.oracle.repository
 
 import org.springframework.stereotype.Repository
 import javax.sql.DataSource
@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
-import com.practice.model.User
+import com.practice.oracle.model.User
 
 @Repository
 class UserRepository(private val dataSource: DataSource) {

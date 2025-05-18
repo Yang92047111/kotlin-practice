@@ -1,11 +1,11 @@
-package com.practice.testcontainer
+package com.practice.oracle
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.SpringApplication
 
 @SpringBootApplication
-class NotesCrudApplication
+class UserCrudApplication
 
 fun main(args: Array<String>) {
-    SpringApplication.run(NotesCrudApplication::class.java, *args)
+    SpringApplication.run(UserCrudApplication::class.java, *args)
 }
