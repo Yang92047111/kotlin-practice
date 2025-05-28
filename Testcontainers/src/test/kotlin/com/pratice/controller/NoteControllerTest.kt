@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.context.ContextConfiguration
 
-@WebMvcTest(NoteController::class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class NoteControllerTest {
 
     @Autowired
@@ -34,25 +34,25 @@ class NoteControllerTest {
     @MockBean
     private lateinit var noteService: NoteService
 
-    @Test
-    fun `should create a note`() {
-        // val note = Note(id = null, title = "Test Title", content = "Test Content")
-        // val createdNote = note.copy(id = 1L)
+    // @Test
+    // fun `should create a note`() {
+    //     val note = Note(id = null, title = "Test Title", content = "Test Content")
+    //     val createdNote = note.copy(id = 1L)
 
-        // Mockito.doReturn(createdNote).`when`(noteService).createNote(note)
+    //     Mockito.doReturn(createdNote).`when`(noteService).createNote(note)
 
-        // mockMvc.perform(
-        //     post("/api/notes")
-        //         .contentType(MediaType.APPLICATION_JSON)
-        //         .content(objectMapper.writeValueAsString(note))
-        // )
-        //     .andExpect(status().isCreated)
-        //     .andExpect(jsonPath("$.id").value(1L))
-        //     .andExpect(jsonPath("$.title").value("Test Title"))
-        //     .andExpect(jsonPath("$.content").value("Test Content"))
+    //     mockMvc.perform(
+    //         post("/api/notes")
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(note))
+    //     )
+    //         .andExpect(status().isCreated)
+    //         .andExpect(jsonPath("$.id").value(1L))
+    //         .andExpect(jsonPath("$.title").value("Test Title"))
+    //         .andExpect(jsonPath("$.content").value("Test Content"))
 
-        // verify(noteService).createNote(note)
-    }
+    //     verify(noteService).createNote(note)
+    // }
 
     // @Test
     // fun `should get a note by id`() {

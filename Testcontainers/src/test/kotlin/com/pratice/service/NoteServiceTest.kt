@@ -8,17 +8,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 
 class NoteServiceTest {
     @Autowired
-    lateinit var noteService: NoteService
+    private lateinit var noteService: NoteService
 
     @MockBean
-    lateinit var noteRepository: NoteRepository
+    private lateinit var noteRepository: NoteRepository
 
     @Test
     fun `should create a note`() {
