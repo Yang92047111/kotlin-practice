@@ -113,6 +113,3 @@ Returns the object if it does **not** satisfy the predicate.
 val odd = number.takeUnless { it % 2 == 0 } // null
 ```
 
----
-
-Would you like a cheat sheet graphic or real-life use case examples in your code?
