@@ -32,6 +32,8 @@ Before MCP, AI agents needed a developer to manually connect every API. Now, the
 | **Flexibility**  | Limited by design            | Very flexible for many use cases       |
 | **Security**     | Uses API keys or OAuth       | Similar, but tailored for AI use       |
 
+![API vs. MCP](./img/MCP_vs_API.png)
+
 ---
 
 ### 🧠 What Makes MCP Special
