@@ -1,83 +1,76 @@
-# Notes CRUD Application
+# Testcontainers Integration Demo
 
-This is a simple Notes CRUD application built with Kotlin and Spring Boot. It provides RESTful endpoints for managing notes and uses MySQL as the database.
+This module demonstrates integration testing with Testcontainers using a Spring Boot Notes CRUD application. It showcases how to write reliable integration tests that spin up real database containers.
 
 ## Features
 
-- Create, Read, Update, and Delete (CRUD) operations for notes.
-- RESTful API endpoints for easy integration.
-- Unit tests using Testcontainers for reliable testing.
+- **CRUD Operations**: Complete Create, Read, Update, Delete functionality for notes
+- **RESTful API**: Clean REST endpoints following best practices
+- **Testcontainers Integration**: Real database testing with containerized MySQL
+- **Spring Boot**: Modern Spring Boot application structure
+- **Reliable Testing**: Integration tests that don't depend on external database setup
 
 ## Project Structure
 
 ```
-notes-crud-app
-├── src
-│   ├── main
-│   │   ├── kotlin
-│   │   │   └── com
-│   │   │       └── example
-│   │   │           └── notes
-│   │   │               ├── NotesApplication.kt
-│   │   │               ├── controller
-│   │   │               │   └── NotesController.kt
-│   │   │               ├── model
-│   │   │               │   └── Note.kt
-│   │   │               ├── repository
-│   │   │               │   └── NotesRepository.kt
-│   │   │               └── service
-│   │   │                   └── NotesService.kt
-│   │   └── resources
-│   │       ├── application.properties
-│   │       └── db
-│   │           └── migration
-│   │               └── V1__Create_Notes_Table.sql
-│   └── test
-│       ├── kotlin
-│       │   └── com
-│       │       └── example
-│       │           └── notes
-│       │               ├── NotesControllerTest.kt
-│       │               └── TestcontainersConfig.kt
-│       └── resources
-├── pom.xml
-└── README.md
+Testcontainers/
+├── src/main/kotlin/com/practice/
+│   ├── [Application classes]           # Spring Boot application
+│   ├── controller/                     # REST controllers
+│   ├── service/                        # Business logic
+│   ├── repository/                     # Data access
+│   └── model/                          # Entity models
+├── src/main/resources/
+│   ├── application.properties          # Application configuration
+│   └── schema.sql                      # Database schema
+├── src/test/kotlin/com/practice/
+│   └── [Test classes]                  # Testcontainers integration tests
+└── pom.xml
 ```
 
 ## Setup Instructions
 
-1. **Clone the repository:**
-   ```
-   git clone <repository-url>
-   cd notes-crud-app
-   ```
+1. **Prerequisites:**
+   - Java 17+
+   - Maven 3.8+
+   - Docker (for Testcontainers)
 
-2. **Configure the database:**
-   - Ensure you have MySQL installed and running.
-   - Create a database for the application.
-   - Update the `src/main/resources/application.properties` file with your database connection details.
-
-3. **Build the project:**
-   ```
+2. **Build the project:**
+   ```bash
    mvn clean install
    ```
 
-4. **Run the application:**
-   ```
+3. **Run the application:**
+   ```bash
    mvn spring-boot:run
    ```
 
-5. **Access the API:**
-   - The application will be available at `http://localhost:8080`.
-   - Use tools like Postman or curl to interact with the RESTful endpoints.
+4. **Access the API:**
+   - Application runs on `http://localhost:8080`
+   - Use tools like Postman, curl, or your browser to test endpoints
 
-## Testing
+5. **Key Advantage:**
+   No need to manually set up MySQL - the application uses an embedded H2 database for development, while tests use real MySQL containers via Testcontainers.
 
-- Unit tests are provided for the `NotesController` using Testcontainers.
-- To run the tests, use the following command:
-  ```
-  mvn test
-  ```
+## Testing with Testcontainers
+
+This module showcases the power of Testcontainers for integration testing:
+
+- **Real Database Testing**: Tests run against actual MySQL containers
+- **Isolated Test Environment**: Each test gets a fresh database instance
+- **No External Dependencies**: No need to set up MySQL locally for testing
+- **Reliable CI/CD**: Tests work consistently across different environments
+
+**Run tests:**
+```bash
+mvn test
+```
+
+The tests will automatically:
+1. Start a MySQL container
+2. Run database migrations
+3. Execute integration tests
+4. Clean up containers after completion
 
 ## License
 

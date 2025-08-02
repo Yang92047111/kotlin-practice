@@ -5,7 +5,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>A Sample Kotlin App</name>
+	<name>Kotlin Practice Projects</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -70,6 +70,7 @@
 	<modules>
 		<module>Testcontainers</module>
 		<module>OracleTrigger</module>
+		<module>withcontext-coroutines</module>
 	</modules>
 
 </project>

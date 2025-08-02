@@ -1,6 +1,6 @@
-# My Project
+# Oracle Trigger CRUD API
 
-This project is a Kotlin-based application that utilizes Maven for dependency management and JDK 17. It connects to an Oracle Database and implements a RESTful API with CRUD operations. The architecture is organized into Controller, Service, and Repository layers, ensuring a clean separation of concerns.
+This module demonstrates a Kotlin-based REST API with Oracle Database integration, featuring database triggers and comprehensive transaction management. Built with Spring Boot and following clean architecture principles.
 
 ## Features
 
@@ -12,61 +12,70 @@ This project is a Kotlin-based application that utilizes Maven for dependency ma
 ## Project Structure
 
 ```
-my-project
-├── sub-module
-│   ├── src
-│   │   ├── main
-│   │   │   ├── kotlin
-│   │   │   │   ├── controller
-│   │   │   │   │   └── ApiController.kt
-│   │   │   │   ├── service
-│   │   │   │   │   └── ApiService.kt
-│   │   │   │   ├── repository
-│   │   │   │   │   └── ApiRepository.kt
-│   │   │   │   └── config
-│   │   │   │       └── DatabaseConfig.kt
-│   │   │   └── resources
-│   │   │       ├── application.properties
-│   │   │       └── db
-│   │   │           ├── schema.sql
-│   │   │           └── data.sql
-│   │   └── test
-│   │       ├── kotlin
-│   │       │   └── ApiTests.kt
-│   │       └── resources
-│   ├── pom.xml
-└── README.md
+OracleTrigger/
+├── src/main/kotlin/
+│   ├── UserCrudApplication.kt      # Main Spring Boot application
+│   ├── controller/
+│   │   └── UserController.kt       # REST endpoints
+│   ├── service/
+│   │   └── UserService.kt          # Business logic
+│   ├── repository/
+│   │   └── UserRepo.kt             # Data access layer
+│   ├── model/
+│   │   └── User.kt                 # Entity model
+│   └── config/
+│       └── DatabaseConfig.kt       # Database configuration
+├── src/main/resources/
+│   ├── application.properties      # App configuration
+│   └── db/
+│       ├── schema.sql              # Database schema with triggers
+│       └── data.sql                # Sample data
+├── src/test/kotlin/
+│   └── controller/
+│       └── UserControllerTest.kt   # Integration tests
+└── pom.xml
 ```
 
 ## Setup Instructions
 
-1. **Clone the Repository**: 
-   ```
-   git clone <repository-url>
-   cd my-project
+1. **Prerequisites**:
+   - Oracle Database (local or remote)
+   - Java 17+
+   - Maven 3.8+
+
+2. **Configure Database**:
+   Update `src/main/resources/application.properties` with your Oracle connection details:
+   ```properties
+   spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe
+   spring.datasource.username=your_username
+   spring.datasource.password=your_password
    ```
 
-2. **Build the Project**: 
-   Use Maven to build the project:
-   ```
+3. **Build and Run**:
+   ```bash
    mvn clean install
+   mvn spring-boot:run
    ```
 
-3. **Configure Database**: 
-   Update the `application.properties` file with your Oracle Database connection details.
+4. **Initialize Database**:
+   The application will automatically execute `schema.sql` and `data.sql` on startup.
 
-4. **Run the Application**: 
-   You can run the application using your preferred method (e.g., through an IDE or command line).
-
-5. **Run Tests**: 
-   Execute the unit tests to ensure everything is functioning correctly:
-   ```
+5. **Run Tests**:
+   ```bash
    mvn test
    ```
 
-## Usage
+## API Endpoints
 
-Once the application is running, you can interact with the API through the defined endpoints for CRUD operations. Refer to the API documentation for specific endpoint details and request/response formats.
+The application provides RESTful endpoints for user management:
+
+- `GET /users` - Retrieve all users
+- `GET /users/{id}` - Retrieve user by ID
+- `POST /users` - Create new user
+- `PUT /users/{id}` - Update existing user
+- `DELETE /users/{id}` - Delete user
+
+All database changes are automatically logged to a history table via Oracle triggers.
 
 ## License
 
