@@ -2,21 +2,21 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [master, dev]
   pull_request:
-    branches: [ master, dev ]
+    branches: [master, dev]
   workflow_dispatch:
 
 env:
-  JAVA_VERSION: '17'
-  MAVEN_OPTS: '-Xmx1024m'
+  JAVA_VERSION: "17"
+  MAVEN_OPTS: "-Xmx1024m"
 
 jobs:
   # Job 1: Build and Test
   build-and-test:
     name: Build and Test All Modules
     runs-on: ubuntu-latest
-    
+
     services:
       # MySQL for Testcontainers module (if needed for integration tests)
       mysql:
@@ -33,61 +33,61 @@ jobs:
           --health-retries=3
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Verify environment setup
-      run: |
-        echo "Java version:"
-        java -version
-        echo "Maven version:"
-        mvn -version
-        echo "Docker version:"
-        docker --version
+      - name: Verify environment setup
+        run: |
+          echo "Java version:"
+          java -version
+          echo "Maven version:"
+          mvn -version
+          echo "Docker version:"
+          docker --version
 
-    - name: Build all modules
-      run: make build
+      - name: Build all modules
+        run: make build
 
-    - name: Run unit tests
-      run: make test
+      - name: Run unit tests
+        run: make test
 
-    - name: Generate test reports
-      run: make test-report
-      if: always()
+      - name: Generate test reports
+        run: make test-report
+        if: always()
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results
-        path: |
-          **/target/surefire-reports/
-          **/target/site/surefire-report.html
-        retention-days: 30
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            **/target/surefire-reports/
+            **/target/site/surefire-report.html
+          retention-days: 30
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-artifacts
-        path: |
-          **/target/*.jar
-          !**/target/*-sources.jar
-          !**/target/*-javadoc.jar
-        retention-days: 7
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            **/target/*.jar
+            !**/target/*-sources.jar
+            !**/target/*-javadoc.jar
+          retention-days: 7
 
   # Job 2: Individual Module Tests (parallel)
   test-modules:
@@ -100,36 +100,36 @@ jobs:
       fail-fast: false
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Install dependencies
-      run: make install
+      - name: Install dependencies
+        run: make install
 
-    - name: Test ${{ matrix.module }} module
-      run: make test-${{ matrix.module == 'withcontext-coroutines' && 'coroutines' || matrix.module == 'OracleTrigger' && 'oracle' || 'testcontainers' }}
+      - name: Test ${{ matrix.module }} module
+        run: make test-${{ matrix.module == 'withcontext-coroutines' && 'coroutines' || matrix.module == 'OracleTrigger' && 'oracle' || 'testcontainers' }}
 
-    - name: Upload module test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results-${{ matrix.module }}
-        path: ${{ matrix.module }}/target/surefire-reports/
-        retention-days: 30
+      - name: Upload module test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.module }}
+          path: ${{ matrix.module }}/target/surefire-reports/
+          retention-days: 30
 
   # Job 3: Code Quality and Security
   code-quality:
@@ -138,35 +138,35 @@ jobs:
     needs: build-and-test
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Shallow clones should be disabled for better analysis
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for better analysis
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Build for analysis
-      run: make build
+      - name: Build for analysis
+        run: make build
 
-    - name: Run basic lint checks
-      run: make lint
+      - name: Run basic lint checks
+        run: make lint
 
-    - name: Check for security vulnerabilities
-      run: |
-        echo "Running security checks..."
-        mvn org.owasp:dependency-check-maven:check || echo "Security check completed with warnings"
+      - name: Check for security vulnerabilities
+        run: |
+          echo "Running security checks..."
+          mvn org.owasp:dependency-check-maven:check || echo "Security check completed with warnings"
 
     # Uncomment if you want to add SonarCloud analysis
     # - name: SonarCloud Scan
@@ -182,38 +182,38 @@ jobs:
     needs: build-and-test
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Start Docker services
-      run: |
-        echo "Starting Docker services for integration tests..."
-        docker --version
+      - name: Start Docker services
+        run: |
+          echo "Starting Docker services for integration tests..."
+          docker --version
 
-    - name: Run Testcontainers integration tests
-      run: |
-        echo "Running Testcontainers integration tests..."
-        cd Testcontainers && mvn test -Dtest="*IntegrationTest"
-      continue-on-error: true
+      - name: Run Testcontainers integration tests
+        run: |
+          echo "Running Testcontainers integration tests..."
+          cd Testcontainers && mvn test -Dtest="*IntegrationTest"
+        continue-on-error: true
 
-    - name: Run coroutines integration tests
-      run: |
-        echo "Running coroutines integration tests..."
-        cd withcontext-coroutines && mvn test -Dtest="*IntegrationTest"
+      - name: Run coroutines integration tests
+        run: |
+          echo "Running coroutines integration tests..."
+          cd withcontext-coroutines && mvn test -Dtest="*IntegrationTest"
 
   # Job 5: Demo Execution
   demo-execution:
@@ -222,34 +222,34 @@ jobs:
     needs: build-and-test
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Build project
-      run: make build
+      - name: Build project
+        run: make build
 
-    - name: Run Coroutines Demo
-      run: |
-        echo "=== Running Kotlin Coroutines Demo ==="
-        timeout 30s make run-coroutines || echo "Demo completed or timed out"
+      - name: Run Coroutines Demo
+        run: |
+          echo "=== Running Kotlin Coroutines Demo ==="
+          timeout 30s make run-coroutines || echo "Demo completed or timed out"
 
-    - name: Verify demo output
-      run: |
-        echo "Demo execution completed successfully"
+      - name: Verify demo output
+        run: |
+          echo "Demo execution completed successfully"
 
   # Job 6: Dependency Check
   dependency-check:
@@ -258,30 +258,30 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Check dependencies for vulnerabilities
-      run: |
-        echo "Checking dependencies for known vulnerabilities..."
-        make deps-check || echo "Dependency check completed"
+      - name: Check dependencies for vulnerabilities
+        run: |
+          echo "Checking dependencies for known vulnerabilities..."
+          make deps-check || echo "Dependency check completed"
 
-    - name: Generate dependency tree
-      run: make deps
+      - name: Generate dependency tree
+        run: make deps
 
   # Job 7: Health Check
   health-check:
@@ -290,28 +290,28 @@ jobs:
     needs: [build-and-test, test-modules]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Run health check
-      run: make health
+      - name: Run health check
+        run: make health
 
-    - name: Show project info
-      run: make info
+      - name: Show project info
+        run: make info
 
   # Job 8: Release Preparation (only on main/master)
   release-prep:
@@ -321,40 +321,40 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: maven
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
-    - name: Package all modules
-      run: make package
+      - name: Package all modules
+        run: make package
 
-    - name: Upload release artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-artifacts
-        path: |
-          **/target/*.jar
-          !**/target/*-sources.jar
-          !**/target/*-javadoc.jar
-        retention-days: 90
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            **/target/*.jar
+            !**/target/*-sources.jar
+            !**/target/*-javadoc.jar
+          retention-days: 90
 
-    - name: Create release summary
-      run: |
-        echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ All modules built successfully" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ All tests passed" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Code quality checks passed" >> $GITHUB_STEP_SUMMARY
-        echo "- 📦 Artifacts ready for release" >> $GITHUB_STEP_SUMMARY
+      - name: Create release summary
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ All modules built successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ All tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Code quality checks passed" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 Artifacts ready for release" >> $GITHUB_STEP_SUMMARY

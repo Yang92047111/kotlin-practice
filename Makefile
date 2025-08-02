@@ -55,20 +55,20 @@ package:
 # Run all tests
 test:
 	@echo "🧪 Running all unit tests..."
-	mvn test
+	MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
 
 # Test individual modules
 test-coroutines:
 	@echo "🧪 Running withcontext-coroutines tests..."
-	cd withcontext-coroutines && mvn test
+	cd withcontext-coroutines && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
 
 test-oracle:
 	@echo "🧪 Running OracleTrigger tests..."
-	cd OracleTrigger && mvn test
+	cd OracleTrigger && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
 
 test-testcontainers:
 	@echo "🧪 Running Testcontainers tests..."
-	cd Testcontainers && mvn test
+	cd Testcontainers && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
 
 # Run individual modules
 run-coroutines:
@@ -78,7 +78,7 @@ run-coroutines:
 
 run-oracle:
 	@echo "🚀 Starting Oracle CRUD API..."
-	@echo "⚠️  Make sure Oracle Database is running and configured in application.properties"
+	@echo "⚠️  Make sure Oracle Database ismake running and configured in application.properties"
 	@echo "🌐 API will be available at: http://localhost:8080/api/users"
 	cd OracleTrigger && mvn spring-boot:run
 

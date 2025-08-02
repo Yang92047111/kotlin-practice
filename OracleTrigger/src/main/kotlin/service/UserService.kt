@@ -1,14 +1,17 @@
 package com.practice.oracle.service
 
+import com.practice.oracle.model.User
+import com.practice.oracle.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.RestClientException
-import com.practice.oracle.repository.UserRepository
-import com.practice.oracle.model.User
+import org.springframework.web.client.RestTemplate
 
 @Service
-class UserService(private val userRepository: UserRepository, private val restTemplate: RestTemplate) {
+class UserService(
+        private val userRepository: UserRepository,
+        private val restTemplate: RestTemplate
+) {
 
     @Transactional
     fun create(user: User): User {
@@ -16,7 +19,12 @@ class UserService(private val userRepository: UserRepository, private val restTe
 
         try {
             // 模擬發送其他 API 請求
-            val response = restTemplate.postForEntity("https://external.api/service", user, String::class.java)
+            val response =
+                    restTemplate.postForEntity(
+                            "https://external.api/service",
+                            user,
+                            String::class.java
+                    )
             if (!response.statusCode.is2xxSuccessful) {
                 throw RuntimeException("External API failed with status: ${response.statusCode}")
             }
@@ -31,18 +39,22 @@ class UserService(private val userRepository: UserRepository, private val restTe
     @Transactional(readOnly = true)
     fun read(id: Long): User {
         return userRepository.findById(id)
-            ?: throw NoSuchElementException("User with ID $id not found")
+                ?: throw NoSuchElementException("User with ID $id not found")
     }
 
     @Transactional
     fun update(id: Long, user: User): User {
-        userRepository.findById(id)
-            ?: throw IllegalArgumentException("User not found")
+        userRepository.findById(id) ?: throw IllegalArgumentException("User not found")
 
         userRepository.insert(user.copy(id = id))
 
         try {
-            val response = restTemplate.postForEntity("https://external.api/notify", user, String::class.java)
+            val response =
+                    restTemplate.postForEntity(
+                            "https://external.api/notify",
+                            user,
+                            String::class.java
+                    )
             if (!response.statusCode.is2xxSuccessful) {
                 throw RuntimeException("External API failed with status: ${response.statusCode}")
             }
@@ -56,14 +68,18 @@ class UserService(private val userRepository: UserRepository, private val restTe
 
     @Transactional
     fun delete(id: Long) {
-        val user = userRepository.findById(id)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userRepository.findById(id) ?: throw IllegalArgumentException("User not found")
 
         userRepository.delete(id)
 
         try {
             // 假設你想在刪除後通知其他系統
-            val response = restTemplate.postForEntity("https://external.api/deleteNotify", user, String::class.java)
+            val response =
+                    restTemplate.postForEntity(
+                            "https://external.api/deleteNotify",
+                            user,
+                            String::class.java
+                    )
             if (!response.statusCode.is2xxSuccessful) {
                 throw RuntimeException("External API failed with status: ${response.statusCode}")
             }

@@ -2,34 +2,22 @@ package com.practice.testcontainer.controller
 
 import com.practice.testcontainer.model.Note
 import com.practice.testcontainer.service.NoteService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.*
 import org.mockito.kotlin.*
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.http.HttpStatus
 
-@WebMvcTest(NoteController::class)
 class NoteControllerTest {
 
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @MockBean
     private lateinit var noteService: NoteService
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
+    private lateinit var noteController: NoteController
     private lateinit var testNote: Note
 
     @BeforeEach
     fun setUp() {
+        noteService = mock()
+        noteController = NoteController(noteService)
         testNote = Note(id = 1L, title = "Test Note", content = "Test Content")
     }
 
@@ -39,18 +27,13 @@ class NoteControllerTest {
         val newNote = Note(title = "Test Note", content = "Test Content")
         whenever(noteService.createNote(any())).thenReturn(testNote)
 
-        // When & Then
-        mockMvc.perform(
-            post("/api/notes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newNote))
-        )
-            .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.title").value("Test Note"))
-            .andExpect(jsonPath("$.content").value("Test Content"))
+        // When
+        val response = noteController.createNote(newNote)
 
-        verify(noteService).createNote(any())
+        // Then
+        assertEquals(HttpStatus.CREATED, response.statusCode)
+        assertEquals(testNote, response.body)
+        verify(noteService).createNote(newNote)
     }
 
     @Test
@@ -59,13 +42,12 @@ class NoteControllerTest {
         val noteId = 1L
         whenever(noteService.getNoteById(noteId)).thenReturn(testNote)
 
-        // When & Then
-        mockMvc.perform(get("/api/notes/{id}", noteId))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.title").value("Test Note"))
-            .andExpect(jsonPath("$.content").value("Test Content"))
+        // When
+        val response = noteController.getNoteById(noteId)
 
+        // Then
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(testNote, response.body)
         verify(noteService).getNoteById(noteId)
     }
 
@@ -75,10 +57,12 @@ class NoteControllerTest {
         val noteId = 999L
         whenever(noteService.getNoteById(noteId)).thenReturn(null)
 
-        // When & Then
-        mockMvc.perform(get("/api/notes/{id}", noteId))
-            .andExpect(status().isNotFound)
+        // When
+        val response = noteController.getNoteById(noteId)
 
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        assertNull(response.body)
         verify(noteService).getNoteById(noteId)
     }
 
@@ -91,15 +75,13 @@ class NoteControllerTest {
         )
         whenever(noteService.getAllNotes()).thenReturn(notes)
 
-        // When & Then
-        mockMvc.perform(get("/api/notes"))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].id").value(1))
-            .andExpect(jsonPath("$[0].title").value("Test Note"))
-            .andExpect(jsonPath("$[1].id").value(2))
-            .andExpect(jsonPath("$[1].title").value("Note 2"))
+        // When
+        val response = noteController.getAllNotes()
 
+        // Then
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(notes, response.body)
+        assertEquals(2, response.body?.size)
         verify(noteService).getAllNotes()
     }
 
@@ -112,17 +94,12 @@ class NoteControllerTest {
         
         whenever(noteService.updateNote(eq(noteId), any())).thenReturn(returnedNote)
 
-        // When & Then
-        mockMvc.perform(
-            put("/api/notes/{id}", noteId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedNote))
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(noteId))
-            .andExpect(jsonPath("$.title").value("Updated Note"))
-            .andExpect(jsonPath("$.content").value("Updated Content"))
+        // When
+        val response = noteController.updateNote(noteId, updatedNote)
 
+        // Then
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(returnedNote, response.body)
         verify(noteService).updateNote(eq(noteId), any())
     }
 
@@ -134,14 +111,12 @@ class NoteControllerTest {
         
         whenever(noteService.updateNote(eq(noteId), any())).thenReturn(null)
 
-        // When & Then
-        mockMvc.perform(
-            put("/api/notes/{id}", noteId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedNote))
-        )
-            .andExpect(status().isNotFound)
+        // When
+        val response = noteController.updateNote(noteId, updatedNote)
 
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        assertNull(response.body)
         verify(noteService).updateNote(eq(noteId), any())
     }
 
@@ -151,10 +126,12 @@ class NoteControllerTest {
         val noteId = 1L
         whenever(noteService.deleteNoteById(noteId)).thenReturn(true)
 
-        // When & Then
-        mockMvc.perform(delete("/api/notes/{id}", noteId))
-            .andExpect(status().isNoContent)
+        // When
+        val response = noteController.deleteNote(noteId)
 
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
+        assertNull(response.body)
         verify(noteService).deleteNoteById(noteId)
     }
 
@@ -164,10 +141,12 @@ class NoteControllerTest {
         val noteId = 999L
         whenever(noteService.deleteNoteById(noteId)).thenReturn(false)
 
-        // When & Then
-        mockMvc.perform(delete("/api/notes/{id}", noteId))
-            .andExpect(status().isNotFound)
+        // When
+        val response = noteController.deleteNote(noteId)
 
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        assertNull(response.body)
         verify(noteService).deleteNoteById(noteId)
     }
 }

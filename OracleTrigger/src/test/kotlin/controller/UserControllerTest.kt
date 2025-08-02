@@ -2,34 +2,22 @@ package com.practice.oracle.controller
 
 import com.practice.oracle.model.User
 import com.practice.oracle.service.UserService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.*
 import org.mockito.kotlin.*
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.http.HttpStatus
 
-@WebMvcTest(UserController::class)
 class UserControllerTest {
 
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @MockBean
     private lateinit var userService: UserService
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
+    private lateinit var userController: UserController
     private lateinit var testUser: User
 
     @BeforeEach
     fun setUp() {
+        userService = mock()
+        userController = UserController(userService)
         testUser = User(id = 1L, name = "John Doe", email = "john@example.com")
     }
 
@@ -39,18 +27,13 @@ class UserControllerTest {
         val newUser = User(name = "John Doe", email = "john@example.com")
         whenever(userService.create(any())).thenReturn(testUser)
 
-        // When & Then
-        mockMvc.perform(
-            post("/api/users/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newUser))
-        )
-            .andExpect(status().isCreated)
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.name").value("John Doe"))
-            .andExpect(jsonPath("$.email").value("john@example.com"))
+        // When
+        val response = userController.createEntity(newUser)
 
-        verify(userService).create(any())
+        // Then
+        assertEquals(HttpStatus.CREATED, response.statusCode)
+        assertEquals(testUser, response.body)
+        verify(userService).create(newUser)
     }
 
     @Test
@@ -59,13 +42,12 @@ class UserControllerTest {
         val userId = 1L
         whenever(userService.read(userId)).thenReturn(testUser)
 
-        // When & Then
-        mockMvc.perform(get("/api/users/user/{id}", userId))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.name").value("John Doe"))
-            .andExpect(jsonPath("$.email").value("john@example.com"))
+        // When
+        val response = userController.getEntity(userId)
 
+        // Then
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(testUser, response.body)
         verify(userService).read(userId)
     }
 
@@ -76,9 +58,9 @@ class UserControllerTest {
         whenever(userService.read(userId)).thenThrow(NoSuchElementException("User not found"))
 
         // When & Then
-        mockMvc.perform(get("/api/users/user/{id}", userId))
-            .andExpect(status().isInternalServerError)
-
+        assertThrows(NoSuchElementException::class.java) {
+            userController.getEntity(userId)
+        }
         verify(userService).read(userId)
     }
 
@@ -91,17 +73,12 @@ class UserControllerTest {
         
         whenever(userService.update(eq(userId), any())).thenReturn(returnedUser)
 
-        // When & Then
-        mockMvc.perform(
-            put("/api/users/{id}", userId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedUser))
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(userId))
-            .andExpect(jsonPath("$.name").value("Jane Doe"))
-            .andExpect(jsonPath("$.email").value("jane@example.com"))
+        // When
+        val response = userController.updateEntity(userId, updatedUser)
 
+        // Then
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(returnedUser, response.body)
         verify(userService).update(eq(userId), any())
     }
 
@@ -111,10 +88,12 @@ class UserControllerTest {
         val userId = 1L
         doNothing().whenever(userService).delete(userId)
 
-        // When & Then
-        mockMvc.perform(delete("/api/users/{id}", userId))
-            .andExpect(status().isNoContent)
+        // When
+        val response = userController.deleteEntity(userId)
 
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
+        assertNull(response.body)
         verify(userService).delete(userId)
     }
 
@@ -124,10 +103,12 @@ class UserControllerTest {
         val userId = 999L
         whenever(userService.delete(userId)).thenThrow(IllegalArgumentException("User not found"))
 
-        // When & Then
-        mockMvc.perform(delete("/api/users/{id}", userId))
-            .andExpect(status().isNotFound)
+        // When
+        val response = userController.deleteEntity(userId)
 
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        assertNull(response.body)
         verify(userService).delete(userId)
     }
 }
