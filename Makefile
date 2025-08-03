@@ -24,7 +24,9 @@ help:
 	@echo "  make run-coroutines - Run the coroutines demo"
 	@echo "  make run-oracle     - Run the Oracle CRUD API (requires Oracle DB)"
 	@echo "  make run-testcontainers - Run the Testcontainers Notes API"
+	@echo "  make run-protocol-demo - Run ConnectProtocal interactive demo"
 	@echo "  make build-protocol - Build ConnectProtocal and generate gRPC stubs"
+	@echo "  make show-generated - Show generated gRPC files structure"
 	@echo ""
 	@echo "Development Commands:"
 	@echo "  make dev-setup      - Set up development environment"
@@ -32,6 +34,11 @@ help:
 	@echo "  make format         - Format code (if formatter is available)"
 	@echo "  make check-workflows - Validate GitHub Actions workflows"
 	@echo "  make setup-github-actions - Setup local GitHub Actions testing"
+	@echo ""
+	@echo "Demo Commands:"
+	@echo "  make demo           - Run all available demos"
+	@echo "  make demo-protocol  - Run ConnectProtocal protocol demo"
+	@echo "  make demo-quick     - Quick demo of all modules"
 	@echo ""
 
 # Build all modules
@@ -100,6 +107,20 @@ build-protocol:
 	@echo "🔧 Generating gRPC stubs from protobuf definitions..."
 	cd ConnectProtocal && mvn clean compile protobuf:compile protobuf:compile-custom
 	@echo "✅ ConnectProtocal build complete with generated gRPC stubs"
+
+# Run ConnectProtocal interactive demo
+run-protocol-demo:
+	@echo "🎬 Starting ConnectProtocal Interactive Demo..."
+	@echo "This demo showcases multi-protocol API contracts:"
+	@echo "• HTTP/REST DTOs with validation"
+	@echo "• WebSocket events with real-time messaging"
+	@echo "• AMQP messages for pub/sub patterns"
+	@echo "• gRPC services with streaming support"
+	@echo "• Cross-protocol data consistency"
+	@echo ""
+	@make build-protocol
+	@echo ""
+	cd ConnectProtocal && ./run-demo.sh
 
 # Development setup
 dev-setup:
@@ -173,6 +194,7 @@ info:
 	@echo "   Protocols: REST DTOs, WebSocket events, AMQP messages, gRPC services"
 	@echo "   Test command: make test-protocol"
 	@echo "   Build command: make build-protocol"
+	@echo "   Demo command: make run-protocol-demo"
 
 # Health check for all modules
 health:
@@ -232,3 +254,70 @@ setup-github-actions:
 		echo "Visit: https://github.com/nektos/act#installation"; \
 		echo "Or run: brew install act (macOS)"; \
 	fi
+
+# Demo Commands
+demo: demo-quick demo-protocol
+	@echo "🎉 All demos completed!"
+
+demo-quick:
+	@echo "⚡ Quick Demo of All Modules"
+	@echo "============================"
+	@echo ""
+	@echo "📦 Module Overview:"
+	@make info
+	@echo ""
+	@echo "🏥 Health Check:"
+	@make health
+	@echo ""
+	@echo "✅ Quick demo completed!"
+
+demo-protocol: run-protocol-demo
+
+# Show generated gRPC files
+show-generated:
+	@echo "📁 Showing generated gRPC files structure..."
+	cd ConnectProtocal && ./show-generated-files.sh
+
+# Interactive demo menu
+demo-interactive:
+	@echo "🎯 Interactive Demo Menu"
+	@echo "========================"
+	@echo ""
+	@echo "Available demos:"
+	@echo "1. ConnectProtocal Multi-Protocol Demo"
+	@echo "2. Kotlin Coroutines Demo"
+	@echo "3. Quick Module Overview"
+	@echo "4. Health Check All Modules"
+	@echo ""
+	@read -p "Select demo (1-4): " choice; \
+	case $$choice in \
+		1) make run-protocol-demo ;; \
+		2) make run-coroutines ;; \
+		3) make demo-quick ;; \
+		4) make health ;; \
+		*) echo "Invalid choice" ;; \
+	esac
+
+# Show demo information
+demo-info:
+	@echo "🎬 Available Demos"
+	@echo "=================="
+	@echo ""
+	@echo "🔄 ConnectProtocal Multi-Protocol Demo:"
+	@echo "   Command: make run-protocol-demo"
+	@echo "   Shows: HTTP, WebSocket, AMQP, gRPC protocols"
+	@echo "   Duration: ~2 minutes"
+	@echo ""
+	@echo "⚡ Kotlin Coroutines Demo:"
+	@echo "   Command: make run-coroutines"
+	@echo "   Shows: Context switching with withContext"
+	@echo "   Duration: ~30 seconds"
+	@echo ""
+	@echo "📊 Quick Module Overview:"
+	@echo "   Command: make demo-quick"
+	@echo "   Shows: All modules info and health check"
+	@echo "   Duration: ~1 minute"
+	@echo ""
+	@echo "🎯 Interactive Menu:"
+	@echo "   Command: make demo-interactive"
+	@echo "   Shows: Interactive demo selection"

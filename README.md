@@ -109,6 +109,12 @@ make run-oracle          # Oracle CRUD API
 make run-testcontainers  # Notes API with Testcontainers
 make build-protocol      # Build ConnectProtocal specs and generate gRPC stubs
 
+# Demo commands
+make demo                # Run all available demos
+make run-protocol-demo   # Interactive ConnectProtocal multi-protocol demo
+make demo-quick          # Quick overview of all modules
+make demo-info           # Show available demo information
+
 # Development setup
 make dev-setup          # Check environment and install dependencies
 ```
@@ -186,6 +192,51 @@ kotlin-practice/
 
 ---
 
+## 🎬 Interactive Demos
+
+This project includes interactive demos to showcase the capabilities of each module:
+
+### 🚀 ConnectProtocal Multi-Protocol Demo
+
+Experience the power of unified API contracts across multiple protocols:
+
+```bash
+make run-protocol-demo
+```
+
+**What you'll see:**
+- HTTP/REST DTOs with validation and JSON serialization
+- WebSocket events with polymorphic type handling
+- AMQP messages with routing keys and envelope patterns
+- gRPC service definitions and usage examples
+- Cross-protocol data consistency demonstration
+
+### ⚡ Quick Module Overview
+
+Get a rapid overview of all modules and their health status:
+
+```bash
+make demo-quick
+```
+
+### 🎯 Demo Information
+
+View all available demos and their descriptions:
+
+```bash
+make demo-info
+```
+
+### 🔄 Interactive Demo Menu
+
+Access an interactive menu to select and run different demos:
+
+```bash
+make demo-interactive
+```
+
+---
+
 ## 🧪 Testing
 
 Each module includes comprehensive unit tests demonstrating different testing approaches:
@@ -241,8 +292,8 @@ This project includes a comprehensive GitHub Actions CI/CD pipeline:
   - Code quality analysis
 
 ### Status Badges
-[![CI Pipeline](https://github.com/YOUR_USERNAME/kotlin-practice/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/kotlin-practice/actions/workflows/ci.yml)
-[![Nightly Build](https://github.com/YOUR_USERNAME/kotlin-practice/actions/workflows/nightly.yml/badge.svg)](https://github.com/YOUR_USERNAME/kotlin-practice/actions/workflows/nightly.yml)
+[![CI Pipeline](https://github.com/Yang92047111/kotlin-practice/actions/workflows/ci.yml/badge.svg)](https://github.com/Yang92047111/kotlin-practice/actions/workflows/ci.yml)
+[![Nightly Build](https://github.com/Yang92047111/kotlin-practice/actions/workflows/nightly.yml/badge.svg)](https://github.com/Yang92047111/kotlin-practice/actions/workflows/nightly.yml)
 
 For detailed CI/CD information, see [.github/README.md](.github/README.md).
 
