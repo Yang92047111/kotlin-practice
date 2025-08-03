@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.practice</groupId>
 	<artifactId>kotlin-practice</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
 	<name>Kotlin Practice Projects</name>
@@ -31,6 +31,26 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- JUnit 5 -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>5.10.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>5.10.1</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- AssertJ -->
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>3.24.2</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
@@ -64,6 +84,14 @@
 					<jvmTarget>17</jvmTarget>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<argLine>-XX:+EnableDynamicAgentLoading -Dnet.bytebuddy.experimental=true</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -71,6 +99,7 @@
 		<module>Testcontainers</module>
 		<module>OracleTrigger</module>
 		<module>withcontext-coroutines</module>
+		<module>ConnectProtocal</module>
 	</modules>
 
 </project>

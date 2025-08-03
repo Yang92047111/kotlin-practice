@@ -51,20 +51,24 @@ class WithContextIntegrationTest {
         // Test withContext performance
         val withContextTime = measureTimeMillis {
             repeat(iterations) {
-                withContext(Dispatchers.IO) {
+                val result = withContext(Dispatchers.IO) {
                     delay(1) // Simulate minimal IO
                     "result"
                 }
+                // Use the result to avoid unused expression warning
+                assertTrue(result.isNotEmpty())
             }
         }
         
         // Test blocking performance (simulated)
         val blockingTime = measureTimeMillis {
             repeat(iterations) {
-                withContext(Dispatchers.IO) {
+                val result = withContext(Dispatchers.IO) {
                     Thread.sleep(1) // Simulate blocking IO
                     "result"
                 }
+                // Use the result to avoid unused expression warning
+                assertTrue(result.isNotEmpty())
             }
         }
         
@@ -75,6 +79,9 @@ class WithContextIntegrationTest {
         
         println("WithContext time: ${withContextTime}ms")
         println("Blocking time: ${blockingTime}ms")
+        
+        // Use the values to avoid unused expression warnings
+        assertTrue(withContextTime < blockingTime + 1000) // Allow some variance
     }
 
     @Test

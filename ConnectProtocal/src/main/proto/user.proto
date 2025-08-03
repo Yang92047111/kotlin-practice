@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package com.example.spec.grpc;
+
+option java_package = "com.example.spec.grpc";
+option java_outer_classname = "UserProto";
+
+import "google/protobuf/timestamp.proto";
+
+// User service definition
+service UserService {
+  // Get user by ID
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  
+  // Create a new user
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  
+  // Update an existing user
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  
+  // Delete a user
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  
+  // List users with pagination
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  
+  // Stream user events
+  rpc StreamUserEvents(StreamUserEventsRequest) returns (stream UserEventMessage);
+}
+
+// User message
+message User {
+  int64 id = 1;
+  string username = 2;
+  string email = 3;
+  string full_name = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  UserStatus status = 7;
+}
+
+// User status enum
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_ACTIVE = 1;
+  USER_STATUS_INACTIVE = 2;
+  USER_STATUS_SUSPENDED = 3;
+  USER_STATUS_DELETED = 4;
+}
+
+// Request messages
+message GetUserRequest {
+  int64 user_id = 1;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string full_name = 3;
+}
+
+message UpdateUserRequest {
+  int64 user_id = 1;
+  optional string username = 2;
+  optional string email = 3;
+  optional string full_name = 4;
+  optional UserStatus status = 5;
+}
+
+message DeleteUserRequest {
+  int64 user_id = 1;
+  optional string reason = 2;
+}
+
+message ListUsersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  optional string filter = 3;
+  optional string sort_by = 4;
+  optional bool ascending = 5;
+}
+
+message StreamUserEventsRequest {
+  repeated int64 user_ids = 1;
+  repeated UserEventType event_types = 2;
+}
+
+// Response messages
+message GetUserResponse {
+  oneof result {
+    User user = 1;
+    Error error = 2;
+  }
+}
+
+message CreateUserResponse {
+  oneof result {
+    User user = 1;
+    Error error = 2;
+  }
+}
+
+message UpdateUserResponse {
+  oneof result {
+    User user = 1;
+    Error error = 2;
+  }
+}
+
+message DeleteUserResponse {
+  oneof result {
+    bool success = 1;
+    Error error = 2;
+  }
+}
+
+message ListUsersResponse {
+  oneof result {
+    UserList users = 1;
+    Error error = 2;
+  }
+}
+
+// Supporting messages
+message UserList {
+  repeated User users = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message Error {
+  string code = 1;
+  string message = 2;
+  repeated string details = 3;
+}
+
+// Event messages
+message UserEventMessage {
+  string event_id = 1;
+  UserEventType event_type = 2;
+  int64 user_id = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  oneof payload {
+    UserCreatedPayload user_created = 5;
+    UserUpdatedPayload user_updated = 6;
+    UserDeletedPayload user_deleted = 7;
+    UserStatusChangedPayload user_status_changed = 8;
+  }
+}
+
+enum UserEventType {
+  USER_EVENT_TYPE_UNSPECIFIED = 0;
+  USER_EVENT_TYPE_CREATED = 1;
+  USER_EVENT_TYPE_UPDATED = 2;
+  USER_EVENT_TYPE_DELETED = 3;
+  USER_EVENT_TYPE_STATUS_CHANGED = 4;
+}
+
+message UserCreatedPayload {
+  User user = 1;
+}
+
+message UserUpdatedPayload {
+  User user = 1;
+  repeated string updated_fields = 2;
+}
+
+message UserDeletedPayload {
+  int64 user_id = 1;
+  optional string reason = 2;
+}
+
+message UserStatusChangedPayload {
+  int64 user_id = 1;
+  UserStatus old_status = 2;
+  UserStatus new_status = 3;
+}

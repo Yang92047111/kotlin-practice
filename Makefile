@@ -18,11 +18,13 @@ help:
 	@echo "  make test-coroutines - Run withcontext-coroutines tests"
 	@echo "  make test-oracle    - Run OracleTrigger tests"
 	@echo "  make test-testcontainers - Run Testcontainers tests"
+	@echo "  make test-protocol  - Run ConnectProtocal tests"
 	@echo ""
 	@echo "Run Commands:"
 	@echo "  make run-coroutines - Run the coroutines demo"
 	@echo "  make run-oracle     - Run the Oracle CRUD API (requires Oracle DB)"
 	@echo "  make run-testcontainers - Run the Testcontainers Notes API"
+	@echo "  make build-protocol - Build ConnectProtocal and generate gRPC stubs"
 	@echo ""
 	@echo "Development Commands:"
 	@echo "  make dev-setup      - Set up development environment"
@@ -55,20 +57,24 @@ package:
 # Run all tests
 test:
 	@echo "🧪 Running all unit tests..."
-	MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
+	MAVEN_OPTS="-Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading" mvn test
 
 # Test individual modules
 test-coroutines:
 	@echo "🧪 Running withcontext-coroutines tests..."
-	cd withcontext-coroutines && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
+	cd withcontext-coroutines && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading" mvn test
 
 test-oracle:
 	@echo "🧪 Running OracleTrigger tests..."
-	cd OracleTrigger && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
+	cd OracleTrigger && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading" mvn test
 
 test-testcontainers:
 	@echo "🧪 Running Testcontainers tests..."
-	cd Testcontainers && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true" mvn test
+	cd Testcontainers && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading" mvn test
+
+test-protocol:
+	@echo "🧪 Running ConnectProtocal tests..."
+	cd ConnectProtocal && MAVEN_OPTS="-Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading" mvn test
 
 # Run individual modules
 run-coroutines:
@@ -87,6 +93,13 @@ run-testcontainers:
 	@echo "🐳 Docker containers will be managed automatically"
 	@echo "🌐 API will be available at: http://localhost:8080/api/notes"
 	cd Testcontainers && mvn spring-boot:run
+
+# Build ConnectProtocal and generate gRPC stubs
+build-protocol:
+	@echo "📦 Building ConnectProtocal module..."
+	@echo "🔧 Generating gRPC stubs from protobuf definitions..."
+	cd ConnectProtocal && mvn clean compile protobuf:compile protobuf:compile-custom
+	@echo "✅ ConnectProtocal build complete with generated gRPC stubs"
 
 # Development setup
 dev-setup:
@@ -154,6 +167,12 @@ info:
 	@echo "   Database: MySQL (via Testcontainers)"
 	@echo "   Test command: make test-testcontainers"
 	@echo "   Run command: make run-testcontainers"
+	@echo ""
+	@echo "📦 ConnectProtocal:"
+	@echo "   Purpose: Multi-protocol API contracts (HTTP, WebSocket, AMQP, gRPC)"
+	@echo "   Protocols: REST DTOs, WebSocket events, AMQP messages, gRPC services"
+	@echo "   Test command: make test-protocol"
+	@echo "   Build command: make build-protocol"
 
 # Health check for all modules
 health:
@@ -167,6 +186,9 @@ health:
 	@echo ""
 	@echo "Checking Testcontainers..."
 	@cd Testcontainers && mvn compile -q && echo "✅ Testcontainers: OK" || echo "❌ Testcontainers: FAILED"
+	@echo ""
+	@echo "Checking ConnectProtocal..."
+	@cd ConnectProtocal && mvn compile -q && echo "✅ ConnectProtocal: OK" || echo "❌ ConnectProtocal: FAILED"
 
 # Watch for changes (requires entr or similar)
 watch:

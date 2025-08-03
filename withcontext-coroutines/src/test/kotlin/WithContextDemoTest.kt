@@ -8,8 +8,8 @@ class WithContextDemoTest {
 
     @Test
     fun `test withContext switches to IO dispatcher`() = runTest {
-        var ioThreadName: String? = null
-        var mainThreadName: String? = null
+        var ioThreadName: String?
+        var mainThreadName: String?
         
         mainThreadName = Thread.currentThread().name
         
@@ -28,8 +28,8 @@ class WithContextDemoTest {
 
     @Test
     fun `test withContext switches to Default dispatcher`() = runTest {
-        var defaultThreadName: String? = null
-        var mainThreadName: String? = null
+        var defaultThreadName: String?
+        var mainThreadName: String?
         
         mainThreadName = Thread.currentThread().name
         

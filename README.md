@@ -11,7 +11,8 @@ kotlin-practice/
 ├── pom.xml                    # Parent POM
 ├── withcontext-coroutines/   # Kotlin Coroutines with withContext
 ├── OracleTrigger/           # Oracle Database CRUD with triggers
-└── Testcontainers/          # Spring Boot CRUD with Testcontainers
+├── Testcontainers/          # Spring Boot CRUD with Testcontainers
+└── ConnectProtocal/         # Multi-protocol API contracts (HTTP, WebSocket, AMQP, gRPC)
 ```
 
 Each module focuses on a specific technology or concept.
@@ -65,6 +66,18 @@ A Spring Boot Notes CRUD application demonstrating integration testing with Test
 - Testcontainers for reliable integration testing
 - Complete CRUD operations for notes management
 
+### 📦 ConnectProtocal
+
+A specification module defining shared API contracts across multiple communication protocols.
+
+**Key features:**
+
+- HTTP REST DTOs with validation
+- WebSocket event models for real-time messaging
+- AMQP message structures for pub/sub patterns
+- gRPC protobuf definitions and generated stubs
+- Cross-protocol consistency and version control
+
 ---
 
 ## 🚀 Quick Start
@@ -94,6 +107,7 @@ make test
 make run-coroutines      # Kotlin Coroutines demo
 make run-oracle          # Oracle CRUD API
 make run-testcontainers  # Notes API with Testcontainers
+make build-protocol      # Build ConnectProtocal specs and generate gRPC stubs
 
 # Development setup
 make dev-setup          # Check environment and install dependencies
@@ -153,10 +167,20 @@ kotlin-practice/
 │   └── src/main/resources/
 │       ├── application.properties
 │       └── db/
-└── Testcontainers/                  # Testcontainers module
+├── Testcontainers/                  # Testcontainers module
+│   ├── pom.xml
+│   ├── src/main/kotlin/
+│   │   └── com/practice/
+│   └── src/test/kotlin/
+└── ConnectProtocal/                 # Protocol specs module
     ├── pom.xml
     ├── src/main/kotlin/
-    │   └── com/practice/
+    │   └── com/example/spec/
+    │       ├── dto/                 # HTTP/WebSocket DTOs
+    │       ├── events/              # WebSocket events
+    │       └── amqp/                # AMQP messages
+    ├── src/main/proto/
+    │   └── user.proto               # gRPC definitions
     └── src/test/kotlin/
 ```
 
@@ -171,6 +195,7 @@ Each module includes comprehensive unit tests demonstrating different testing ap
 - **withcontext-coroutines**: Coroutines testing with `kotlinx-coroutines-test`
 - **OracleTrigger**: Spring Boot testing with Mockito and web layer tests
 - **Testcontainers**: Integration testing with real database containers
+- **ConnectProtocal**: DTO serialization, event handling, and protocol contract testing
 
 ### Running Tests
 
@@ -182,6 +207,7 @@ make test
 make test-coroutines
 make test-oracle
 make test-testcontainers
+make test-protocol
 ```
 
 For detailed testing information, see [TESTING.md](TESTING.md).
@@ -229,6 +255,7 @@ For detailed CI/CD information, see [.github/README.md](.github/README.md).
 - [x] Kotlin Coroutines with `withContext`
 - [x] Oracle Database CRUD with triggers
 - [x] Spring Boot with Testcontainers integration
+- [x] Multi-protocol API contracts (HTTP, WebSocket, AMQP, gRPC)
 - [x] Comprehensive unit tests for all modules
 - [x] Makefile for easy development workflow
 
